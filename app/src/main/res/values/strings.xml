@@ -4,6 +4,7 @@
 
     <string name="loading_failed">Loading failed</string>
     <string name="retry">Retry</string>
+    <string name="search_hint">Search...</string>
 
     <string-array name="home_screen_categories">
         <item>Movies</item>

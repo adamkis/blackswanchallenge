@@ -5,6 +5,8 @@ package com.adamkis.blackswanchallenge.common;
  */
 public class Const {
 
+    public static final long SEARCH_REVEAL_ANIMATION_SPEED = 500;
+
     public static final int MOVIES_CATEGORY_INDEX = 0;
     public static final int TV_SHOWS_CATEGORY_INDEX = 1;
     public static final int PEOPLE_CATEGORY_INDEX = 2;

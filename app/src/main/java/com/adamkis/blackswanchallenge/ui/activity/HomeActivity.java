@@ -1,6 +1,7 @@
 package com.adamkis.blackswanchallenge.ui.activity;
 
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.adamkis.blackswanchallenge.R;
+import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.common.Utils;
 import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
 import com.adamkis.blackswanchallenge.model.response.TvShowSearchResponse;
@@ -26,7 +28,7 @@ public class HomeActivity
         extends AppCompatActivity
         implements SwipeRefreshLayout.OnRefreshListener,
             AdapterView.OnItemSelectedListener,
-            HomeDownloadResponseListener {
+            HomeDownloadResponseListener, View.OnClickListener {
 
     private CoordinatorLayout clRoot;
     private MovieSearchResultAdapter movieAdapter;
@@ -36,6 +38,8 @@ public class HomeActivity
     private LinearLayoutManager mLayoutManager;
     private Spinner spCategory;
     private HomeDownloadManager homeDownloadManager;
+    private View searchContainer;
+    private FloatingActionButton btSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,11 @@ public class HomeActivity
         spCategory.setAdapter(adapter);
         spCategory.setOnItemSelectedListener(this);
 
+        // Setup search
+        searchContainer = findViewById(R.id.searchContainer);
+        searchContainer.setAlpha(0f);
+        btSearch = (FloatingActionButton) findViewById(R.id.btSearch);
+        btSearch.setOnClickListener(this);
         // Download data
         homeDownloadManager = new HomeDownloadManager(this);
         homeDownloadManager.downloadPopular(spCategory.getSelectedItemPosition());
@@ -123,4 +132,15 @@ public class HomeActivity
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
 
+    @Override
+    public void onClick(View v) {
+        if( v.getId() == R.id.btSearch ){
+            searchContainer.animate()
+                .alpha(1f)
+                .setDuration(Const.SEARCH_REVEAL_ANIMATION_SPEED);
+            btSearch.setAlpha(0f);
+            btSearch.setClickable(false);
+            btSearch.setFocusable(false);
+        }
+    }
 }
