@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     @Override
                     public void onResponse(MovieSearchResponse popularMovieResponse) {
                         showLoading(false);
+                        searchResultContainer.setAdapter(movieAdapter);
                         movieAdapter.showData(popularMovieResponse.getResults());
                     }
                 }, new Response.ErrorListener() {
@@ -128,7 +129,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void showLoading(final boolean show){
         if( show ){
-            movieAdapter.clearData();
+            if( movieAdapter != null ) {
+                movieAdapter.clearData();
+            }
+            if( tvAdapter != null ) {
+                tvAdapter.clearData();
+            }
         }
         swipeRefreshContainer.post(new Runnable() {
             @Override
