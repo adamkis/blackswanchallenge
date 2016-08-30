@@ -1,7 +1,9 @@
-package com.adamkis.blackswanchallenge;
+package com.adamkis.blackswanchallenge.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.adamkis.blackswanchallenge.R;
 
 public class MainActivity extends AppCompatActivity {
 
