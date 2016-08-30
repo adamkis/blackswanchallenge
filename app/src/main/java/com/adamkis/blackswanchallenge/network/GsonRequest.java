@@ -35,6 +35,7 @@ public class GsonRequest<T> extends Request<T> {
         this.clazz = clazz;
         this.headers = headers;
         this.listener = listener;
+        setShouldCache(false);
     }
 
     @Override
