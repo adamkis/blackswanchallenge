@@ -1,3 +1,8 @@
 <resources>
+
     <string name="app_name">Black Swan Challenge</string>
+
+    <string name="loading_failed">Loading failed</string>
+    <string name="retry">Retry</string>
+
 </resources>

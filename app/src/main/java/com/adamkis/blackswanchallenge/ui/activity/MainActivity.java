@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         Utils.log(error.toString());
                         showLoading(false);
                         final Snackbar snackbar = Snackbar
-                                .make(clRoot, "Loading failed", Snackbar.LENGTH_LONG)
-                                .setAction("Retry", new View.OnClickListener() {
+                                .make(clRoot, getString(R.string.loading_failed), Snackbar.LENGTH_INDEFINITE)
+                                .setAction(getString(R.string.retry), new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         downloadPopularMovies();
