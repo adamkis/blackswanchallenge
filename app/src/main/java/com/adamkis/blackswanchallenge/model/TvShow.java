@@ -11,9 +11,6 @@ public class TvShow extends BaseScreenObject {
     @Expose @SerializedName("first_air_date")
     private boolean firstAirDate;
 
-    @Expose @SerializedName("origin_country")
-    private String originCountry;
-
     @Expose @SerializedName("original_name")
     private String originalName;
 
@@ -22,10 +19,6 @@ public class TvShow extends BaseScreenObject {
 
     public boolean isFirstAirDate() {
         return firstAirDate;
-    }
-
-    public String getOriginCountry() {
-        return originCountry;
     }
 
     public String getOriginalName() {
@@ -38,10 +31,9 @@ public class TvShow extends BaseScreenObject {
 
     @Override
     public String toString() {
-        return "Movie{" +
+        return "TvShow{" +
                 "name='" + name + '\'' +
                 "originalName='" + originalName + '\'' +
-                "originCountry='" + originCountry + '\'' +
                 "firstAirDate='" + firstAirDate + '\'' +
                 ", posterPath='" + getPosterPath() + '\'' +
                 ", overview='" + getOverview() + '\'' +

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.model.Movie;
+import com.adamkis.blackswanchallenge.model.TvShow;
 
 import java.util.List;
 
@@ -16,9 +17,9 @@ import java.util.List;
  * Created by akis on 30/08/16.
  */
 
-public class MovieSearchResultAdapter extends RecyclerView.Adapter<MovieSearchResultAdapter.ViewHolder> {
+public class TvShowSearchResultAdapter extends RecyclerView.Adapter<TvShowSearchResultAdapter.ViewHolder> {
 
-    private List<Movie> dataSet;
+    private List<TvShow> dataSet;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvTitle;
@@ -28,24 +29,24 @@ public class MovieSearchResultAdapter extends RecyclerView.Adapter<MovieSearchRe
         }
     }
 
-    public MovieSearchResultAdapter() {}
+    public TvShowSearchResultAdapter() {}
 
-    public void showData(List<Movie> dataSet){
+    public void showData(List<TvShow> dataSet){
         this.dataSet = dataSet;
         notifyDataSetChanged();
     }
 
     @Override
-    public MovieSearchResultAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TvShowSearchResultAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_card, parent, false);
+                .inflate(R.layout.tv_show_card, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.tvTitle.setText(dataSet.get(position).getTitle());
+        holder.tvTitle.setText(dataSet.get(position).getName());
     }
 
     @Override

@@ -36,7 +36,7 @@ public class BaseScreenResponse {
 
     @Override
     public String toString() {
-        return "MovieSearchResponse{" +
+        return "BaseScreenResponse{" +
                 "page='" + page + '\'' +
                 ", totalResults='" + totalResults + '\'' +
                 ", totalPages='" + totalPages + '\'' +

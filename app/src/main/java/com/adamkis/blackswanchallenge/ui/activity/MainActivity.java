@@ -15,17 +15,21 @@ import android.widget.Spinner;
 import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.common.Utils;
+import com.adamkis.blackswanchallenge.model.TvShow;
 import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
+import com.adamkis.blackswanchallenge.model.response.TvShowSearchResponse;
 import com.adamkis.blackswanchallenge.network.GsonRequest;
 import com.adamkis.blackswanchallenge.network.VolleySingleton;
 import com.adamkis.blackswanchallenge.ui.adapter.MovieSearchResultAdapter;
+import com.adamkis.blackswanchallenge.ui.adapter.TvShowSearchResultAdapter;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener {
 
     private CoordinatorLayout clRoot;
-    private MovieSearchResultAdapter adapter;
+    private MovieSearchResultAdapter movieAdapter;
+    private TvShowSearchResultAdapter tvAdapter;
     private RecyclerView searchResultContainer;
     private SwipeRefreshLayout swipeRefreshContainer;
     private LinearLayoutManager mLayoutManager;
@@ -44,8 +48,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mLayoutManager = new LinearLayoutManager(this);
         searchResultContainer.setLayoutManager(mLayoutManager);
         swipeRefreshContainer.setOnRefreshListener(this);
-        adapter = new MovieSearchResultAdapter();
-        searchResultContainer.setAdapter(adapter);
+        movieAdapter = new MovieSearchResultAdapter();
+        searchResultContainer.setAdapter(movieAdapter);
         downloadPopularMovies();
 
         // Setup the category selector
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     @Override
                     public void onResponse(MovieSearchResponse popularMovieResponse) {
                         showLoading(false);
-                        adapter.showData(popularMovieResponse.getResults());
+                        movieAdapter.showData(popularMovieResponse.getResults());
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -84,13 +88,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         showLoading(true);
         GsonRequest popularMovieRequest = new GsonRequest(
                 Const.buildPopularTvShowsRequestUrl(),
-                MovieSearchResponse.class,
+                TvShowSearchResponse.class,
                 null,
-                new Response.Listener<MovieSearchResponse>() {
+                new Response.Listener<TvShowSearchResponse>() {
                     @Override
-                    public void onResponse(MovieSearchResponse popularMovieResponse) {
+                    public void onResponse(TvShowSearchResponse tvShowSearchResponse) {
                         showLoading(false);
-                        adapter.showData(popularMovieResponse.getResults());
+                        tvAdapter = new TvShowSearchResultAdapter();
+                        searchResultContainer.setAdapter(tvAdapter);
+                        tvAdapter.showData(tvShowSearchResponse.getResults());
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -122,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void showLoading(final boolean show){
         if( show ){
-            adapter.clearData();
+            movieAdapter.clearData();
         }
         swipeRefreshContainer.post(new Runnable() {
             @Override
@@ -140,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 .setAction(getString(R.string.retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        downloadPopularMovies();
+                        downloadSelectedCategory(spCategory.getSelectedItemPosition());
                     }
                 });
         snackbar.show();

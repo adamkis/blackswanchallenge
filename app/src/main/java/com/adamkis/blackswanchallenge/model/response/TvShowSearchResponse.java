@@ -22,7 +22,7 @@ public class TvShowSearchResponse extends BaseScreenResponse {
 
     @Override
     public String toString() {
-        return "MovieSearchResponse{" +
+        return "TvShowSearchResponse{" +
                 "page='" + getPage() + '\'' +
                 ", totalResults='" + getTotalResults() + '\'' +
                 ", totalPages='" + getTotalPages() + '\'' +
