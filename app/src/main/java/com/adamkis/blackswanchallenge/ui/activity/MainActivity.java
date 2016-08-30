@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.common.Const;
@@ -22,19 +25,21 @@ import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener {
 
     private CoordinatorLayout clRoot;
     private MovieSearchResultAdapter adapter;
     private RecyclerView searchResultContainer;
     private SwipeRefreshLayout swipeRefreshContainer;
     private LinearLayoutManager mLayoutManager;
+    private Spinner spCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Setup the results container and download data
         clRoot = (CoordinatorLayout) findViewById(R.id.clRoot);
         searchResultContainer = (RecyclerView) findViewById(R.id.searchResultContainer);
         swipeRefreshContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshContainer);
@@ -44,8 +49,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshContainer.setOnRefreshListener(this);
         adapter = new MovieSearchResultAdapter();
         searchResultContainer.setAdapter(adapter);
-
         downloadPopularMovies();
+
+        // Setup the category selector
+        spCategory = (Spinner) findViewById(R.id.spCategory);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.home_screen_categories, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategory.setAdapter(adapter);
+        spCategory.setOnItemSelectedListener(this);
+
     }
 
     private void downloadPopularMovies(){
@@ -70,9 +83,44 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         VolleySingleton.get(this).addToRequestQueue(popularMovieRequest);
     }
 
+    private void downloadPopularTvShows(){
+        showLoading(true);
+        GsonRequest popularMovieRequest = new GsonRequest(
+                Const.buildPopularTvShowsRequestUrl(),
+                MovieSearchResponse.class,
+                null,
+                new Response.Listener<MovieSearchResponse>() {
+                    @Override
+                    public void onResponse(MovieSearchResponse popularMovieResponse) {
+                        showLoading(false);
+                        adapter.showData(popularMovieResponse.getResults());
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showError(error);
+                    }
+                }
+        );
+        VolleySingleton.get(this).addToRequestQueue(popularMovieRequest);
+    }
+
+    private void downloadSelectedCategory(int index){
+        switch (index){
+            case Const.MOVIES_CATEGORY_INDEX:
+                downloadPopularMovies();
+                break;
+            case Const.TV_SHOWS_CATEGORY_INDEX:
+                downloadPopularTvShows();
+                break;
+            case Const.PEOPLE_CATEGORY_INDEX:
+                break;
+        }
+    }
+
     @Override
     public void onRefresh() {
-        downloadPopularMovies();
+        downloadSelectedCategory(spCategory.getSelectedItemPosition());
     }
 
     private void showLoading(final boolean show){
@@ -99,6 +147,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     }
                 });
         snackbar.show();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        downloadSelectedCategory(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
 }

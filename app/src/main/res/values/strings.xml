@@ -5,4 +5,10 @@
     <string name="loading_failed">Loading failed</string>
     <string name="retry">Retry</string>
 
+    <string-array name="home_screen_categories">
+        <item>Movies</item>
+        <item>TV Shows</item>
+        <item>People</item>
+    </string-array>
+
 </resources>
