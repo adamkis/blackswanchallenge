@@ -1,14 +1,18 @@
 package com.adamkis.blackswanchallenge.ui.activity;
 
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.common.Utils;
+import com.adamkis.blackswanchallenge.model.Movie;
 import com.adamkis.blackswanchallenge.model.MovieSearchResponse;
 import com.adamkis.blackswanchallenge.network.GsonRequest;
 import com.adamkis.blackswanchallenge.network.VolleySingleton;
@@ -16,8 +20,11 @@ import com.adamkis.blackswanchallenge.ui.adapter.MovieSearchResultAdapter;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
+    private CoordinatorLayout clRoot;
     private MovieSearchResultAdapter adapter;
     private RecyclerView searchResultContainer;
     private SwipeRefreshLayout swipeRefreshContainer;
@@ -28,12 +35,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        clRoot = (CoordinatorLayout) findViewById(R.id.clRoot);
         searchResultContainer = (RecyclerView) findViewById(R.id.searchResultContainer);
         swipeRefreshContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshContainer);
         searchResultContainer.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         searchResultContainer.setLayoutManager(mLayoutManager);
         swipeRefreshContainer.setOnRefreshListener(this);
+        adapter = new MovieSearchResultAdapter();
+        searchResultContainer.setAdapter(adapter);
 
         downloadPopularMovies();
     }
@@ -47,14 +57,23 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 new Response.Listener<MovieSearchResponse>() {
                     @Override
                     public void onResponse(MovieSearchResponse popularMovieResponse) {
-                        adapter = new MovieSearchResultAdapter(popularMovieResponse.getResults());
-                        searchResultContainer.setAdapter(adapter);
                         showLoading(false);
+                        adapter.showData(popularMovieResponse.getResults());
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Utils.log(error.toString());
+                        showLoading(false);
+                        final Snackbar snackbar = Snackbar
+                                .make(clRoot, "Loading failed", Snackbar.LENGTH_LONG)
+                                .setAction("Retry", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        downloadPopularMovies();
+                                    }
+                                });
+                        snackbar.show();
                     }
                 }
         );
@@ -66,21 +85,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         downloadPopularMovies();
     }
 
-    private void showLoading(boolean show){
+    private void showLoading(final boolean show){
         if( show ){
-            if( adapter != null ){
-                adapter.clearData();
+            adapter.clearData();
+        }
+        swipeRefreshContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshContainer.setRefreshing(show);
             }
-            swipeRefreshContainer.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshContainer.setRefreshing(true);
-                }
-            });
-        }
-        else{
-            swipeRefreshContainer.setRefreshing(false);
-        }
+        });
     }
 
 }

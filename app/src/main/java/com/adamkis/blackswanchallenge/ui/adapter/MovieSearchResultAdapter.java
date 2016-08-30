@@ -28,8 +28,11 @@ public class MovieSearchResultAdapter extends RecyclerView.Adapter<MovieSearchRe
         }
     }
 
-    public MovieSearchResultAdapter(List<Movie> dataSet) {
+    public MovieSearchResultAdapter() {}
+
+    public void showData(List<Movie> dataSet){
         this.dataSet = dataSet;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -48,11 +51,16 @@ public class MovieSearchResultAdapter extends RecyclerView.Adapter<MovieSearchRe
 
     @Override
     public int getItemCount() {
+        if( this.dataSet == null ) {
+            return 0;
+        }
         return dataSet.size();
     }
 
     public void clearData() {
-        this.dataSet.clear();
+        if( this.dataSet != null ) {
+            this.dataSet.clear();
+        }
         notifyDataSetChanged();
     }
 
