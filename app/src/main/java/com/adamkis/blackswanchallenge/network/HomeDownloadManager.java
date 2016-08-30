@@ -1,5 +1,7 @@
 package com.adamkis.blackswanchallenge.network;
 
+import android.support.annotation.Nullable;
+
 import com.adamkis.blackswanchallenge.MyApplication;
 import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
@@ -18,10 +20,11 @@ public class HomeDownloadManager {
         this.homeDownloadResponseListener = homeDownloadResponseListener;
     }
 
-    private void downloadPopularMovies(){
+    private void downloadMovies(@Nullable String searchKeyword){
         homeDownloadResponseListener.showLoading(true);
+        String url = (searchKeyword == null) ? Const.buildPopularMovieRequestUrl() : Const.buildSearchMovieUrl(searchKeyword);
         GsonRequest popularMovieRequest = new GsonRequest(
-            Const.buildPopularMovieRequestUrl(),
+            url,
             MovieSearchResponse.class,
             null,
             new Response.Listener<MovieSearchResponse>() {
@@ -60,10 +63,10 @@ public class HomeDownloadManager {
         VolleySingleton.get(MyApplication.getAppContext()).addToRequestQueue(popularMovieRequest);
     }
 
-    public void downloadPopular(int categoryIndex){
+    public void downloadData(int categoryIndex, @Nullable String keyword){
         switch (categoryIndex){
             case Const.MOVIES_CATEGORY_INDEX:
-                downloadPopularMovies();
+                downloadMovies(keyword);
                 break;
             case Const.TV_SHOWS_CATEGORY_INDEX:
                 downloadPopularTvShows();

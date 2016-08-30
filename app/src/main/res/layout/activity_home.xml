@@ -56,26 +56,38 @@
             >
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_gravity="center"
                 card_view:cardCornerRadius="4dp"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
                 android:layout_marginBottom="16dp"
                 >
-                <EditText
-                    android:id="@+id/etSearch"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginRight="32dp"
-                    android:hint="@string/search_hint"/>
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/etSearch"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="@string/search_hint"/>
+                    <ImageView
+                        android:id="@+id/startSearch"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_search_black_48dp"/>
+                </LinearLayout>
             </android.support.v7.widget.CardView>
         </FrameLayout>
 
         <!-- Search Button -->
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btSearch"
+            android:id="@+id/openSearch"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="16dp"

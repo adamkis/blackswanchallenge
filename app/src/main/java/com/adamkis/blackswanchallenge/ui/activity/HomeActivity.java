@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.adamkis.blackswanchallenge.R;
@@ -39,7 +40,9 @@ public class HomeActivity
     private Spinner spCategory;
     private HomeDownloadManager homeDownloadManager;
     private View searchContainer;
-    private FloatingActionButton btSearch;
+    private FloatingActionButton openSearch;
+    private View startSearch;
+    private EditText etSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,17 +71,21 @@ public class HomeActivity
         // Setup search
         searchContainer = findViewById(R.id.searchContainer);
         searchContainer.setAlpha(0f);
-        btSearch = (FloatingActionButton) findViewById(R.id.btSearch);
-        btSearch.setOnClickListener(this);
+        openSearch = (FloatingActionButton) findViewById(R.id.openSearch);
+        openSearch.setOnClickListener(this);
+        startSearch = findViewById(R.id.startSearch);
+        startSearch.setOnClickListener(this);
+        etSearch = (EditText) findViewById(R.id.etSearch);
+
         // Download data
         homeDownloadManager = new HomeDownloadManager(this);
-        homeDownloadManager.downloadPopular(spCategory.getSelectedItemPosition());
+        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), null);
 
     }
 
     @Override
     public void onRefresh() {
-        homeDownloadManager.downloadPopular(spCategory.getSelectedItemPosition());
+        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), null);
     }
 
     @Override
@@ -104,7 +111,7 @@ public class HomeActivity
                 .setAction(getString(R.string.retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        homeDownloadManager.downloadPopular(spCategory.getSelectedItemPosition());
+                        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), null);
                     }
                 });
         snackbar.show();
@@ -126,7 +133,7 @@ public class HomeActivity
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        homeDownloadManager.downloadPopular(position);
+        homeDownloadManager.downloadData(position, null);
     }
 
     @Override
@@ -134,13 +141,16 @@ public class HomeActivity
 
     @Override
     public void onClick(View v) {
-        if( v.getId() == R.id.btSearch ){
+        if( v.getId() == R.id.openSearch){
             searchContainer.animate()
                 .alpha(1f)
                 .setDuration(Const.SEARCH_REVEAL_ANIMATION_SPEED);
-            btSearch.setAlpha(0f);
-            btSearch.setClickable(false);
-            btSearch.setFocusable(false);
+            openSearch.setAlpha(0f);
+            openSearch.setClickable(false);
+            openSearch.setFocusable(false);
+        }
+        if( v.getId() == R.id.startSearch){
+            homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), etSearch.getText().toString());
         }
     }
 }
