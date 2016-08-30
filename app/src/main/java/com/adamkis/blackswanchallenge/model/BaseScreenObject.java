@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by akis on 30/08/16.
  */
-public class BaseScreenObject {
+public abstract class BaseScreenObject {
 
     @Expose
     @SerializedName("poster_path")

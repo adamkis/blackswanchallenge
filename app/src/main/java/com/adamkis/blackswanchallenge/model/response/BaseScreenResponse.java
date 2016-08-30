@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by akis on 30/08/16.
  */
-public class BaseScreenResponse {
+public abstract class BaseScreenResponse {
 
     @Expose
     @SerializedName("page")

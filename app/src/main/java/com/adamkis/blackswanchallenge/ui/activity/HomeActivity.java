@@ -18,13 +18,19 @@ import com.adamkis.blackswanchallenge.common.Utils;
 import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
 import com.adamkis.blackswanchallenge.model.response.TvShowSearchResponse;
 import com.adamkis.blackswanchallenge.network.GsonRequest;
+import com.adamkis.blackswanchallenge.network.HomeDownloadManager;
+import com.adamkis.blackswanchallenge.network.HomeDownloadResponseListener;
 import com.adamkis.blackswanchallenge.network.VolleySingleton;
 import com.adamkis.blackswanchallenge.ui.adapter.MovieSearchResultAdapter;
 import com.adamkis.blackswanchallenge.ui.adapter.TvShowSearchResultAdapter;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener {
+public class HomeActivity
+        extends AppCompatActivity
+        implements SwipeRefreshLayout.OnRefreshListener,
+            AdapterView.OnItemSelectedListener,
+            HomeDownloadResponseListener {
 
     private CoordinatorLayout clRoot;
     private MovieSearchResultAdapter movieAdapter;
@@ -33,13 +39,14 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
     private SwipeRefreshLayout swipeRefreshContainer;
     private LinearLayoutManager mLayoutManager;
     private Spinner spCategory;
+    private HomeDownloadManager homeDownloadManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Setup the results container and download data
+        // Setup the results container
         clRoot = (CoordinatorLayout) findViewById(R.id.clRoot);
         searchResultContainer = (RecyclerView) findViewById(R.id.searchResultContainer);
         swipeRefreshContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshContainer);
@@ -49,7 +56,6 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshContainer.setOnRefreshListener(this);
         movieAdapter = new MovieSearchResultAdapter();
         searchResultContainer.setAdapter(movieAdapter);
-        downloadPopularMovies();
 
         // Setup the category selector
         spCategory = (Spinner) findViewById(R.id.spCategory);
@@ -59,74 +65,19 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         spCategory.setAdapter(adapter);
         spCategory.setOnItemSelectedListener(this);
 
-    }
+        // Download data
+        homeDownloadManager = new HomeDownloadManager(this);
+        homeDownloadManager.downloadSelectedCategory(spCategory.getSelectedItemPosition());
 
-    private void downloadPopularMovies(){
-        showLoading(true);
-        GsonRequest popularMovieRequest = new GsonRequest(
-                Const.buildPopularMovieRequestUrl(),
-                MovieSearchResponse.class,
-                null,
-                new Response.Listener<MovieSearchResponse>() {
-                    @Override
-                    public void onResponse(MovieSearchResponse popularMovieResponse) {
-                        showLoading(false);
-                        searchResultContainer.setAdapter(movieAdapter);
-                        movieAdapter.showData(popularMovieResponse.getResults());
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        showError(error);
-                    }
-                }
-        );
-        VolleySingleton.get(this).addToRequestQueue(popularMovieRequest);
-    }
-
-    private void downloadPopularTvShows(){
-        showLoading(true);
-        GsonRequest popularMovieRequest = new GsonRequest(
-                Const.buildPopularTvShowsRequestUrl(),
-                TvShowSearchResponse.class,
-                null,
-                new Response.Listener<TvShowSearchResponse>() {
-                    @Override
-                    public void onResponse(TvShowSearchResponse tvShowSearchResponse) {
-                        showLoading(false);
-                        tvAdapter = new TvShowSearchResultAdapter();
-                        searchResultContainer.setAdapter(tvAdapter);
-                        tvAdapter.showData(tvShowSearchResponse.getResults());
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        showError(error);
-                    }
-                }
-        );
-        VolleySingleton.get(this).addToRequestQueue(popularMovieRequest);
-    }
-
-    private void downloadSelectedCategory(int index){
-        switch (index){
-            case Const.MOVIES_CATEGORY_INDEX:
-                downloadPopularMovies();
-                break;
-            case Const.TV_SHOWS_CATEGORY_INDEX:
-                downloadPopularTvShows();
-                break;
-            case Const.PEOPLE_CATEGORY_INDEX:
-                break;
-        }
     }
 
     @Override
     public void onRefresh() {
-        downloadSelectedCategory(spCategory.getSelectedItemPosition());
+        homeDownloadManager.downloadSelectedCategory(spCategory.getSelectedItemPosition());
     }
 
-    private void showLoading(final boolean show){
+    @Override
+    public void showLoading(final boolean show){
         if( show ){
             if( movieAdapter != null ) {
                 movieAdapter.clearData();
@@ -143,7 +94,8 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
     }
 
-    private void showError(VolleyError error){
+    @Override
+    public void showError(VolleyError error){
         Utils.log(error.toString());
         showLoading(false);
         final Snackbar snackbar = Snackbar
@@ -151,15 +103,30 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
                 .setAction(getString(R.string.retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        downloadSelectedCategory(spCategory.getSelectedItemPosition());
+                        homeDownloadManager.downloadSelectedCategory(spCategory.getSelectedItemPosition());
                     }
                 });
         snackbar.show();
     }
 
     @Override
+    public void showMoviesResponse(MovieSearchResponse popularMovieResponse) {
+        showLoading(false);
+        searchResultContainer.setAdapter(movieAdapter);
+        movieAdapter.showData(popularMovieResponse.getResults());
+    }
+
+    @Override
+    public void showTvShowsResponse(TvShowSearchResponse tvShowSearchResponse) {
+        showLoading(false);
+        tvAdapter = new TvShowSearchResultAdapter();
+        searchResultContainer.setAdapter(tvAdapter);
+        tvAdapter.showData(tvShowSearchResponse.getResults());
+    }
+
+    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        downloadSelectedCategory(position);
+        homeDownloadManager.downloadSelectedCategory(position);
     }
 
     @Override
