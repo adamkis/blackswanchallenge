@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.common.Utils;
-import com.adamkis.blackswanchallenge.model.Movie;
+import com.adamkis.blackswanchallenge.model.MovieSearchResponse;
 import com.adamkis.blackswanchallenge.network.GsonRequest;
 import com.adamkis.blackswanchallenge.network.VolleySingleton;
 import com.android.volley.Response;
@@ -25,12 +25,12 @@ public class MainActivity extends AppCompatActivity {
 
         GsonRequest popularMovieRequest = new GsonRequest(
                 Const.buildPopularMovieRequestUrl(),
-                Object.class,
+                MovieSearchResponse.class,
                 null,
-                new Response.Listener<Object>() {
+                new Response.Listener<MovieSearchResponse>() {
                     @Override
-                    public void onResponse(Object object) {
-
+                    public void onResponse(MovieSearchResponse popularMovieResponse) {
+                        Utils.log(popularMovieResponse.toString());
                     }
                 }, new Response.ErrorListener() {
                     @Override
