@@ -60,8 +60,8 @@ public class HomeDownloadManager {
         VolleySingleton.get(MyApplication.getAppContext()).addToRequestQueue(popularMovieRequest);
     }
 
-    public void downloadSelectedCategory(int index){
-        switch (index){
+    public void downloadPopular(int categoryIndex){
+        switch (categoryIndex){
             case Const.MOVIES_CATEGORY_INDEX:
                 downloadPopularMovies();
                 break;

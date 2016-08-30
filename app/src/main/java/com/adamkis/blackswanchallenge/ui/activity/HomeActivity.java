@@ -13,17 +13,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.adamkis.blackswanchallenge.R;
-import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.common.Utils;
 import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
 import com.adamkis.blackswanchallenge.model.response.TvShowSearchResponse;
-import com.adamkis.blackswanchallenge.network.GsonRequest;
 import com.adamkis.blackswanchallenge.network.HomeDownloadManager;
 import com.adamkis.blackswanchallenge.network.HomeDownloadResponseListener;
-import com.adamkis.blackswanchallenge.network.VolleySingleton;
 import com.adamkis.blackswanchallenge.ui.adapter.MovieSearchResultAdapter;
 import com.adamkis.blackswanchallenge.ui.adapter.TvShowSearchResultAdapter;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
 public class HomeActivity
@@ -55,7 +51,7 @@ public class HomeActivity
         searchResultContainer.setLayoutManager(mLayoutManager);
         swipeRefreshContainer.setOnRefreshListener(this);
         movieAdapter = new MovieSearchResultAdapter();
-        searchResultContainer.setAdapter(movieAdapter);
+        tvAdapter = new TvShowSearchResultAdapter();
 
         // Setup the category selector
         spCategory = (Spinner) findViewById(R.id.spCategory);
@@ -67,24 +63,20 @@ public class HomeActivity
 
         // Download data
         homeDownloadManager = new HomeDownloadManager(this);
-        homeDownloadManager.downloadSelectedCategory(spCategory.getSelectedItemPosition());
+        homeDownloadManager.downloadPopular(spCategory.getSelectedItemPosition());
 
     }
 
     @Override
     public void onRefresh() {
-        homeDownloadManager.downloadSelectedCategory(spCategory.getSelectedItemPosition());
+        homeDownloadManager.downloadPopular(spCategory.getSelectedItemPosition());
     }
 
     @Override
     public void showLoading(final boolean show){
         if( show ){
-            if( movieAdapter != null ) {
-                movieAdapter.clearData();
-            }
-            if( tvAdapter != null ) {
-                tvAdapter.clearData();
-            }
+            movieAdapter.clearData();
+            tvAdapter.clearData();
         }
         swipeRefreshContainer.post(new Runnable() {
             @Override
@@ -103,7 +95,7 @@ public class HomeActivity
                 .setAction(getString(R.string.retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        homeDownloadManager.downloadSelectedCategory(spCategory.getSelectedItemPosition());
+                        homeDownloadManager.downloadPopular(spCategory.getSelectedItemPosition());
                     }
                 });
         snackbar.show();
@@ -119,19 +111,16 @@ public class HomeActivity
     @Override
     public void showTvShowsResponse(TvShowSearchResponse tvShowSearchResponse) {
         showLoading(false);
-        tvAdapter = new TvShowSearchResultAdapter();
         searchResultContainer.setAdapter(tvAdapter);
         tvAdapter.showData(tvShowSearchResponse.getResults());
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        homeDownloadManager.downloadSelectedCategory(position);
+        homeDownloadManager.downloadPopular(position);
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+    public void onNothingSelected(AdapterView<?> parent) {}
 
 }
