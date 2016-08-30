@@ -63,17 +63,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Utils.log(error.toString());
-                        showLoading(false);
-                        final Snackbar snackbar = Snackbar
-                                .make(clRoot, getString(R.string.loading_failed), Snackbar.LENGTH_INDEFINITE)
-                                .setAction(getString(R.string.retry), new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        downloadPopularMovies();
-                                    }
-                                });
-                        snackbar.show();
+                        showError(error);
                     }
                 }
         );
@@ -95,6 +85,20 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 swipeRefreshContainer.setRefreshing(show);
             }
         });
+    }
+
+    private void showError(VolleyError error){
+        Utils.log(error.toString());
+        showLoading(false);
+        final Snackbar snackbar = Snackbar
+                .make(clRoot, getString(R.string.loading_failed), Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(R.string.retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        downloadPopularMovies();
+                    }
+                });
+        snackbar.show();
     }
 
 }
