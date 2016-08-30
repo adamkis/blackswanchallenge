@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipeRefreshContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -17,21 +17,21 @@
             android:layout_height="match_parent"
             android:scrollbarStyle="outsideInset"
             android:clipToPadding="false"
-            android:paddingTop="10dp"
+            android:paddingTop="16dp"
             android:paddingBottom="64dp"
             />
 
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/blankButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            app:layout_anchor="@id/searchResultContainer"
-            app:layout_anchorGravity="bottom|center_horizontal"
-            />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/blankButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        app:layout_anchor="@id/searchResultContainer"
+        app:layout_anchorGravity="bottom|center_horizontal"
+        />
 
-    </android.support.design.widget.CoordinatorLayout>
+</android.support.design.widget.CoordinatorLayout>
 
-</android.support.v4.widget.SwipeRefreshLayout>

@@ -39,10 +39,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void downloadPopularMovies(){
-        swipeRefreshContainer.setRefreshing(true);
-//        if( adapter != null ){
-//            adapter.clearData();
-//        }
+        showLoading(true);
         GsonRequest popularMovieRequest = new GsonRequest(
                 Const.buildPopularMovieRequestUrl(),
                 MovieSearchResponse.class,
@@ -52,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     public void onResponse(MovieSearchResponse popularMovieResponse) {
                         adapter = new MovieSearchResultAdapter(popularMovieResponse.getResults());
                         searchResultContainer.setAdapter(adapter);
-                        swipeRefreshContainer.setRefreshing(false);
+                        showLoading(false);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -68,4 +65,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onRefresh() {
         downloadPopularMovies();
     }
+
+    private void showLoading(boolean show){
+        if( show ){
+            if( adapter != null ){
+                adapter.clearData();
+            }
+            swipeRefreshContainer.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshContainer.setRefreshing(true);
+                }
+            });
+        }
+        else{
+            swipeRefreshContainer.setRefreshing(false);
+        }
+    }
+
 }
