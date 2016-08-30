@@ -1,5 +1,6 @@
-package com.adamkis.blackswanchallenge.model;
+package com.adamkis.blackswanchallenge.model.response;
 
+import com.adamkis.blackswanchallenge.model.Movie;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,9 +10,10 @@ import java.util.List;
 /**
  * Created by akis on 30/08/16.
  */
-public class MovieSearchResponse {
+public class BaseScreenResponse {
 
-    @Expose @SerializedName("page")
+    @Expose
+    @SerializedName("page")
     private String page;
 
     @Expose @SerializedName("total_results")
@@ -19,9 +21,6 @@ public class MovieSearchResponse {
 
     @Expose @SerializedName("total_pages")
     private String totalPages;
-
-    @Expose @SerializedName("results")
-    private List<Movie> results = new ArrayList<>();
 
     public String getPage() {
         return page;
@@ -35,17 +34,12 @@ public class MovieSearchResponse {
         return totalPages;
     }
 
-    public List<Movie> getResults() {
-        return results;
-    }
-
     @Override
     public String toString() {
         return "MovieSearchResponse{" +
                 "page='" + page + '\'' +
                 ", totalResults='" + totalResults + '\'' +
                 ", totalPages='" + totalPages + '\'' +
-                ", results=" + results +
                 '}';
     }
 

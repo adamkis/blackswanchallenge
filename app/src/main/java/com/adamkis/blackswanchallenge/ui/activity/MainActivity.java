@@ -15,15 +15,12 @@ import android.widget.Spinner;
 import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.common.Utils;
-import com.adamkis.blackswanchallenge.model.Movie;
-import com.adamkis.blackswanchallenge.model.MovieSearchResponse;
+import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
 import com.adamkis.blackswanchallenge.network.GsonRequest;
 import com.adamkis.blackswanchallenge.network.VolleySingleton;
 import com.adamkis.blackswanchallenge.ui.adapter.MovieSearchResultAdapter;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener {
 
