@@ -15,7 +15,6 @@ import android.widget.Spinner;
 import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.common.Utils;
-import com.adamkis.blackswanchallenge.model.TvShow;
 import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
 import com.adamkis.blackswanchallenge.model.response.TvShowSearchResponse;
 import com.adamkis.blackswanchallenge.network.GsonRequest;
@@ -25,7 +24,7 @@ import com.adamkis.blackswanchallenge.ui.adapter.TvShowSearchResultAdapter;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemSelectedListener {
 
     private CoordinatorLayout clRoot;
     private MovieSearchResultAdapter movieAdapter;
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
 
         // Setup the results container and download data
         clRoot = (CoordinatorLayout) findViewById(R.id.clRoot);
