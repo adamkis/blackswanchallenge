@@ -8,11 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.common.Const;
@@ -29,7 +32,9 @@ public class HomeActivity
         extends AppCompatActivity
         implements SwipeRefreshLayout.OnRefreshListener,
             AdapterView.OnItemSelectedListener,
-            HomeDownloadResponseListener, View.OnClickListener {
+            HomeDownloadResponseListener,
+            View.OnClickListener,
+            TextView.OnEditorActionListener {
 
     private CoordinatorLayout clRoot;
     private MovieSearchResultAdapter movieAdapter;
@@ -71,11 +76,14 @@ public class HomeActivity
         // Setup search
         searchContainer = findViewById(R.id.searchContainer);
         searchContainer.setAlpha(0f);
+        searchContainer.setOnClickListener(null);
+        searchContainer.setClickable(false);
+        searchContainer.setFocusable(false);
         openSearch = (FloatingActionButton) findViewById(R.id.openSearch);
         openSearch.setOnClickListener(this);
         startSearch = findViewById(R.id.startSearch);
-        startSearch.setOnClickListener(this);
         etSearch = (EditText) findViewById(R.id.etSearch);
+        etSearch.setOnEditorActionListener(this);
 
         // Download data
         homeDownloadManager = new HomeDownloadManager(this);
@@ -142,15 +150,61 @@ public class HomeActivity
     @Override
     public void onClick(View v) {
         if( v.getId() == R.id.openSearch){
-            searchContainer.animate()
-                .alpha(1f)
-                .setDuration(Const.SEARCH_REVEAL_ANIMATION_SPEED);
-            openSearch.setAlpha(0f);
-            openSearch.setClickable(false);
-            openSearch.setFocusable(false);
+            showSearchMode(true);
         }
         if( v.getId() == R.id.startSearch){
             homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), etSearch.getText().toString());
+            showSearchMode(false);
+        }
+        if( v.getId() == R.id.searchContainer){
+            showSearchMode(false);
+        }
+    }
+
+    private void showSearchMode(boolean show){
+        if (show) {
+            searchContainer.animate()
+                    .alpha(1f)
+                    .setDuration(Const.SEARCH_REVEAL_ANIMATION_SPEED);
+            openSearch.setAlpha(0f);
+            searchContainer.setOnClickListener(this);
+            searchContainer.setClickable(true);
+            searchContainer.setFocusable(true);
+            openSearch.setFocusable(false);
+            openSearch.setClickable(false);
+            startSearch.setOnClickListener(this);
+        }
+        else{
+            searchContainer.animate()
+                    .alpha(0f)
+                    .setDuration(Const.SEARCH_REVEAL_ANIMATION_SPEED);
+            openSearch.setAlpha(1f);
+            searchContainer.setOnClickListener(null);
+            searchContainer.setClickable(false);
+            searchContainer.setFocusable(false);
+            openSearch.setFocusable(true);
+            openSearch.setClickable(true);
+            startSearch.setOnClickListener(null);
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), etSearch.getText().toString());
+            showSearchMode(false);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if( searchContainer.getAlpha() > 0 ){
+            showSearchMode(false);
+        }
+        else {
+            super.onBackPressed();
         }
     }
 }
