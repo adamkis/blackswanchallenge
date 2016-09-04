@@ -1,6 +1,7 @@
 package com.adamkis.blackswanchallenge.common;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 /**
  * Created by akis on 30/08/16.
@@ -22,6 +23,8 @@ public class Const {
     public static final String MOVIEDB_API_KEY = "?api_key=0a08e38b874d0aa2d426ffc04357069d";
     public static final String MOVIEDB_QUERY = "&query=";
     public static final String SEPARATOR = "/";
+    public static final String MOVIEDB_IMAGE_URL_BASE = "http://image.tmdb.org/t/p/";
+    public static final String MOVIEDB_IMAGE_SIZE_W300 = "w300/";
 
     public static String buildSearchMovieUrl(String keyword){
         return new StringBuilder(MOVIEDB_URL_BASE)
@@ -80,6 +83,13 @@ public class Const {
                 .append(SEPARATOR)
                 .append(MOVIEDB_POPULAR)
                 .append(MOVIEDB_API_KEY)
+                .toString();
+    }
+
+    public static String buildImagePath( @NonNull String filePath){
+        return new StringBuilder(MOVIEDB_IMAGE_URL_BASE)
+                .append(MOVIEDB_IMAGE_SIZE_W300)
+                .append(filePath)
                 .toString();
     }
 
