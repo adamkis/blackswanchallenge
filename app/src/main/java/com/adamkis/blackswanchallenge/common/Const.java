@@ -17,6 +17,7 @@ public class Const {
     public static final String MOVIEDB_MOVIE = "movie";
     public static final String MOVIEDB_SEARCH = "search";
     public static final String MOVIEDB_TV = "tv";
+    public static final String MOVIEDB_PERSON = "person";
     public static final String MOVIEDB_POPULAR = "popular";
     public static final String MOVIEDB_API_KEY = "?api_key=0a08e38b874d0aa2d426ffc04357069d";
     public static final String MOVIEDB_QUERY = "&query=";
@@ -44,9 +45,29 @@ public class Const {
             .toString();
     }
 
+    public static String buildSearchPeopleUrl(String keyword){
+        return new StringBuilder(MOVIEDB_URL_BASE)
+            .append(MOVIEDB_SEARCH)
+            .append(SEPARATOR)
+            .append(MOVIEDB_PERSON)
+            .append(MOVIEDB_API_KEY)
+            .append(MOVIEDB_QUERY)
+            .append(Uri.encode(keyword))
+            .toString();
+    }
+
     public static String buildPopularTvShowsRequestUrl(){
         return new StringBuilder(MOVIEDB_URL_BASE)
             .append(MOVIEDB_TV)
+            .append(SEPARATOR)
+            .append(MOVIEDB_POPULAR)
+            .append(MOVIEDB_API_KEY)
+            .toString();
+    }
+
+    public static String buildPopularPeopleRequestUrl(){
+        return new StringBuilder(MOVIEDB_URL_BASE)
+            .append(MOVIEDB_PERSON)
             .append(SEPARATOR)
             .append(MOVIEDB_POPULAR)
             .append(MOVIEDB_API_KEY)

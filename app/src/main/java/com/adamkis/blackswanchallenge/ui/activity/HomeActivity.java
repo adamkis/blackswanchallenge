@@ -4,7 +4,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,11 +20,13 @@ import com.adamkis.blackswanchallenge.R;
 import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.common.Utils;
 import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
+import com.adamkis.blackswanchallenge.model.response.PeopleSearchResponse;
 import com.adamkis.blackswanchallenge.model.response.TvShowSearchResponse;
 import com.adamkis.blackswanchallenge.network.HomeDownloadManager;
 import com.adamkis.blackswanchallenge.network.HomeDownloadManager.DownloadMode;
 import com.adamkis.blackswanchallenge.network.HomeDownloadResponseListener;
 import com.adamkis.blackswanchallenge.ui.adapter.MovieSearchResultAdapter;
+import com.adamkis.blackswanchallenge.ui.adapter.PeopleSearchResultAdapter;
 import com.adamkis.blackswanchallenge.ui.adapter.TvShowSearchResultAdapter;
 import com.android.volley.VolleyError;
 
@@ -40,6 +41,7 @@ public class HomeActivity
     private CoordinatorLayout clRoot;
     private MovieSearchResultAdapter movieAdapter;
     private TvShowSearchResultAdapter tvAdapter;
+    private PeopleSearchResultAdapter peopleAdapter;
     private RecyclerView searchResultContainer;
     private SwipeRefreshLayout swipeRefreshContainer;
     private LinearLayoutManager mLayoutManager;
@@ -65,6 +67,7 @@ public class HomeActivity
         swipeRefreshContainer.setOnRefreshListener(this);
         movieAdapter = new MovieSearchResultAdapter();
         tvAdapter = new TvShowSearchResultAdapter();
+        peopleAdapter = new PeopleSearchResultAdapter();
 
         // Setup the category selector
         spCategory = (Spinner) findViewById(R.id.spCategory);
@@ -102,6 +105,7 @@ public class HomeActivity
         if( show ){
             movieAdapter.clearData();
             tvAdapter.clearData();
+            peopleAdapter.clearData();
         }
         swipeRefreshContainer.post(new Runnable() {
             @Override
@@ -138,6 +142,13 @@ public class HomeActivity
         showLoading(false);
         searchResultContainer.setAdapter(tvAdapter);
         tvAdapter.showData(tvShowSearchResponse.getResults());
+    }
+
+    @Override
+    public void showPeopleResponse(PeopleSearchResponse peopleSearchResponse) {
+        showLoading(false);
+        searchResultContainer.setAdapter(peopleAdapter);
+        peopleAdapter.showData(peopleSearchResponse.getResults());
     }
 
     // Spinner selector
