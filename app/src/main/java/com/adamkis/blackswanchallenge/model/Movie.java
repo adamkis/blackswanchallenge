@@ -3,10 +3,12 @@ package com.adamkis.blackswanchallenge.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by akis on 30/08/16.
  */
-public class Movie extends BaseScreenObject {
+public class Movie extends BaseScreenObject implements Serializable {
 
     @Expose @SerializedName("adult")
     private boolean adult;

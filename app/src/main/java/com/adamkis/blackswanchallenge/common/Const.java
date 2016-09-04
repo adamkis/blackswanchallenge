@@ -26,6 +26,10 @@ public class Const {
     public static final String MOVIEDB_IMAGE_URL_BASE = "http://image.tmdb.org/t/p/";
     public static final String MOVIEDB_IMAGE_SIZE_W300 = "w300/";
 
+    public static final String KEY_MOVIE_OBJECT = "key_movie_object";
+    public static final String KEY_TV_OBJECT = "key_tv_object";
+    public static final String KEY_PERSON_OBJECT = "key_movie_person_object";
+
     public static String buildSearchMovieUrl(String keyword){
         return new StringBuilder(MOVIEDB_URL_BASE)
             .append(MOVIEDB_SEARCH)
