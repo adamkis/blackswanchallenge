@@ -23,13 +23,14 @@ import com.adamkis.blackswanchallenge.common.Utils;
 import com.adamkis.blackswanchallenge.model.response.MovieSearchResponse;
 import com.adamkis.blackswanchallenge.model.response.TvShowSearchResponse;
 import com.adamkis.blackswanchallenge.network.HomeDownloadManager;
+import com.adamkis.blackswanchallenge.network.HomeDownloadManager.DownloadMode;
 import com.adamkis.blackswanchallenge.network.HomeDownloadResponseListener;
 import com.adamkis.blackswanchallenge.ui.adapter.MovieSearchResultAdapter;
 import com.adamkis.blackswanchallenge.ui.adapter.TvShowSearchResultAdapter;
 import com.android.volley.VolleyError;
 
 public class HomeActivity
-        extends AppCompatActivity
+        extends BaseActivity
         implements SwipeRefreshLayout.OnRefreshListener,
             AdapterView.OnItemSelectedListener,
             HomeDownloadResponseListener,
@@ -87,13 +88,13 @@ public class HomeActivity
 
         // Download data
         homeDownloadManager = new HomeDownloadManager(this);
-        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), null);
+        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), DownloadMode.POPULAR, null);
 
     }
 
     @Override
     public void onRefresh() {
-        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), null);
+        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), DownloadMode.POPULAR, null);
     }
 
     @Override
@@ -119,7 +120,7 @@ public class HomeActivity
                 .setAction(getString(R.string.retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), null);
+                        homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), DownloadMode.POPULAR, null);
                     }
                 });
         snackbar.show();
@@ -139,9 +140,10 @@ public class HomeActivity
         tvAdapter.showData(tvShowSearchResponse.getResults());
     }
 
+    // Spinner selector
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        homeDownloadManager.downloadData(position, null);
+        homeDownloadManager.downloadData(position, DownloadMode.POPULAR, null);
     }
 
     @Override
@@ -153,7 +155,8 @@ public class HomeActivity
             showSearchMode(true);
         }
         if( v.getId() == R.id.startSearch){
-            homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), etSearch.getText().toString());
+            homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(),
+                    DownloadMode.SEARCH, etSearch.getText().toString());
             showSearchMode(false);
         }
         if( v.getId() == R.id.searchContainer){
@@ -185,13 +188,15 @@ public class HomeActivity
             openSearch.setFocusable(true);
             openSearch.setClickable(true);
             startSearch.setOnClickListener(null);
+            hideKeyboard();
         }
     }
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(), etSearch.getText().toString());
+            homeDownloadManager.downloadData(spCategory.getSelectedItemPosition(),
+                    DownloadMode.SEARCH, etSearch.getText().toString());
             showSearchMode(false);
             return true;
         }

@@ -1,5 +1,7 @@
 package com.adamkis.blackswanchallenge.common;
 
+import android.net.Uri;
+
 /**
  * Created by akis on 30/08/16.
  */
@@ -27,7 +29,18 @@ public class Const {
             .append(MOVIEDB_MOVIE)
             .append(MOVIEDB_API_KEY)
             .append(MOVIEDB_QUERY)
-            .append(keyword)
+            .append(Uri.encode(keyword))
+            .toString();
+    }
+
+    public static String buildSearchTVUrl(String keyword){
+        return new StringBuilder(MOVIEDB_URL_BASE)
+            .append(MOVIEDB_SEARCH)
+            .append(SEPARATOR)
+            .append(MOVIEDB_TV)
+            .append(MOVIEDB_API_KEY)
+            .append(MOVIEDB_QUERY)
+            .append(Uri.encode(keyword))
             .toString();
     }
 

@@ -16,15 +16,37 @@ public class HomeDownloadManager {
 
     HomeDownloadResponseListener homeDownloadResponseListener;
 
+    public static enum DownloadMode { SEARCH, POPULAR };
+
     public HomeDownloadManager(HomeDownloadResponseListener homeDownloadResponseListener) {
         this.homeDownloadResponseListener = homeDownloadResponseListener;
     }
 
-    private void downloadMovies(@Nullable String searchKeyword){
+    private void downloadPopularMovies(){
         homeDownloadResponseListener.showLoading(true);
-        String url = (searchKeyword == null) ? Const.buildPopularMovieRequestUrl() : Const.buildSearchMovieUrl(searchKeyword);
         GsonRequest popularMovieRequest = new GsonRequest(
-            url,
+            Const.buildPopularMovieRequestUrl(),
+            MovieSearchResponse.class,
+            null,
+            new Response.Listener<MovieSearchResponse>() {
+                @Override
+                public void onResponse(MovieSearchResponse popularMovieResponse) {
+                    homeDownloadResponseListener.showMoviesResponse(popularMovieResponse);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    homeDownloadResponseListener.showError(error);
+                }
+            }
+        );
+        VolleySingleton.get(MyApplication.getAppContext()).addToRequestQueue(popularMovieRequest);
+    }
+
+    private void searchMovies(@Nullable String searchKeyword){
+        homeDownloadResponseListener.showLoading(true);
+        GsonRequest popularMovieRequest = new GsonRequest(
+            Const.buildSearchMovieUrl(searchKeyword),
             MovieSearchResponse.class,
             null,
             new Response.Listener<MovieSearchResponse>() {
@@ -63,13 +85,44 @@ public class HomeDownloadManager {
         VolleySingleton.get(MyApplication.getAppContext()).addToRequestQueue(popularMovieRequest);
     }
 
-    public void downloadData(int categoryIndex, @Nullable String keyword){
+    private void searchTvShows(@Nullable String searchKeyword){
+        homeDownloadResponseListener.showLoading(true);
+        GsonRequest popularMovieRequest = new GsonRequest(
+            Const.buildSearchTVUrl(searchKeyword),
+            TvShowSearchResponse.class,
+            null,
+            new Response.Listener<TvShowSearchResponse>() {
+                @Override
+                public void onResponse(TvShowSearchResponse tvShowSearchResponse) {
+                    homeDownloadResponseListener.showTvShowsResponse(tvShowSearchResponse);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    homeDownloadResponseListener.showError(error);
+                }
+            }
+        );
+        VolleySingleton.get(MyApplication.getAppContext()).addToRequestQueue(popularMovieRequest);
+    }
+
+    public void downloadData(int categoryIndex, DownloadMode downloadMode, @Nullable String keyword){
         switch (categoryIndex){
             case Const.MOVIES_CATEGORY_INDEX:
-                downloadMovies(keyword);
+                if( downloadMode == DownloadMode.POPULAR ) {
+                    downloadPopularMovies();
+                }
+                else if( downloadMode == DownloadMode.SEARCH ){
+                    searchMovies(keyword);
+                }
                 break;
             case Const.TV_SHOWS_CATEGORY_INDEX:
-                downloadPopularTvShows();
+                if( downloadMode == DownloadMode.POPULAR ) {
+                    downloadPopularTvShows();
+                }
+                else if( downloadMode == DownloadMode.SEARCH ){
+                    searchTvShows(keyword);
+                }
                 break;
             case Const.PEOPLE_CATEGORY_INDEX:
                 break;
