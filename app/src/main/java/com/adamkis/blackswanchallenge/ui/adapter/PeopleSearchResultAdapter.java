@@ -6,9 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.adamkis.blackswanchallenge.MyApplication;
 import com.adamkis.blackswanchallenge.R;
+import com.adamkis.blackswanchallenge.common.Const;
 import com.adamkis.blackswanchallenge.model.Person;
 import com.adamkis.blackswanchallenge.model.TvShow;
+import com.adamkis.blackswanchallenge.network.VolleySingleton;
+import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.List;
 
@@ -23,9 +27,11 @@ public class PeopleSearchResultAdapter extends RecyclerView.Adapter<PeopleSearch
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvTitle;
+        public NetworkImageView image;
         public ViewHolder(View v) {
             super(v);
             this.tvTitle = (TextView) v.findViewById(R.id.tvTitle);
+            this.image = (NetworkImageView) v.findViewById(R.id.image);
         }
     }
 
@@ -47,6 +53,9 @@ public class PeopleSearchResultAdapter extends RecyclerView.Adapter<PeopleSearch
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.tvTitle.setText(dataSet.get(position).getName());
+        holder.image.setDefaultImageResId(R.color.imagePlaceholderColor);
+        holder.image.setImageUrl(Const.buildImagePath(dataSet.get(position).getProfilePath()),
+                VolleySingleton.get(MyApplication.getAppContext()).getImageLoader());
     }
 
     @Override
